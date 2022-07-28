@@ -3,6 +3,12 @@ const cors = require("cors");
 const data = require("./restaurants.json");
 const fs = require("fs");
 
+const handleWriteFile = () => {
+    const dataJson = JSON.stringify(data)
+    fs.writeFile('restaurants.json', dataJson, err => console.err(err))
+}
+
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -48,3 +54,12 @@ app.put('/update-restaurant',(req,res) => {
 
 
 //find and delete a restaurant
+app.delete('/delete-restaurant', (req,res) => {
+    const {name} = req.query
+   const itemFound = data.find((eachRestaurant) => eachRestaurant.name === name)
+   const indexOfItem = data.indexOf(itemFound)
+   data[indexOfItem] = req.body 
+   handleWriteFile()
+   res.send(data)
+    
+})
